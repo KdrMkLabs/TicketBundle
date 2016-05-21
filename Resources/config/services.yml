@@ -1,0 +1,10 @@
+services:
+    kdrmklabs_ticket.user_repository:
+        class: Doctrine\ORM\EntityRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - %kdrmklabs_ticket.model.user.class%
+    kdrmklabs_ticket.ticket_service:
+        class: Kdrmklabs\Bundle\TicketBundle\Services\TicketService
+        arguments:
+            - "@service_container"
