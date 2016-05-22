@@ -30,8 +30,7 @@ class TicketMessage
     private $ticket;
 
     /**
-     * @var UserInterface
-     * @ORM\ManyToOne(targetEntity="\Kdrmklabs\Bundle\TicketBundle\Model\UserInterface")
+     * ORM defined in Kdrmklabs\Bundle\TicketBundle\EventListener\LoadMetadata
      */
     private $user;
 

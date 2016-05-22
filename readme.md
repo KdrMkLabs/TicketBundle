@@ -100,12 +100,6 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
     }
 
-    public function onConsoleCommand()
-    {
-        $this->container->get('gedmo.listener.translatable')
-            ->setTranslatableLocale($this->container->get('translator')->getLocale());
-    }
-
     public function onKernelRequest(GetResponseEvent $event)
     {
         $securityContext = $this->container->get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
@@ -148,8 +142,6 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
             # loggable hooks user username if one is in security context
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-            # translatable sets locale such as default application locale before command execute
-            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
 
     # Doctrine Extension listeners to handle behaviors
     gedmo.listener.tree:
@@ -220,16 +212,19 @@ More details: https://github.com/KnpLabs/KnpPaginatorBundle#configuration-exampl
 
 ### VI. Configure the bundle.
 
-Add `kdrmklabs_ticket` configuration to you config.yml
+VI.I. Add `kdrmklabs_ticket` configuration to you config.yml
 
 ```yml
 # file: app/config/config.yml
 
 kdrmklabs_ticket:
     user_class: YourBundle\Entity\User
+    user_primay_key: id_user
 ```
 
-Add `resolve_target_entities` to your doctrine configuration
+Where `user_primay_key` is the name of your primary key in the user table.
+
+VI.II. Add `resolve_target_entities` to your doctrine configuration
 
 ```yml
 # file: app/config/config.yml
@@ -245,6 +240,30 @@ doctrine:
 > Do not forget change 'AppBundle\Entity\User' to your User Entity namespace
 
 More details about resolve_target_entities: http://symfony.com/doc/current/cookbook/doctrine/resolve_target_entity.html
+
+VI.III. Implements `Kdrmklabs\Bundle\TicketBundle\Model\UserInterface` from your User entity.
+
+```php
+// file: 
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * User
+ *
+ * @ORM\Table(name="user")
+ * @ORM\Entity
+ */
+class User implements \Kdrmklabs\Bundle\TicketBundle\Model\UserInterface
+{
+    public function getId(){
+        
+    }
+}
+
+```
 
 ### VII. Finally, create database tables and update the schema
 

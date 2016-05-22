@@ -26,5 +26,6 @@ class KdrmklabsTicketExtension extends Extension
         $loader->load('services.yml');
         
         $container->setParameter('kdrmklabs_ticket.model.user.class', $config['user_class']);
+        $container->setParameter('kdrmklabs_ticket.model.user.primary_key', $config['user_primay_key']);
     }
 }

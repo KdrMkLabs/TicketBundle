@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->scalarNode('user_class')->isRequired()->cannotBeEmpty()->end()
+            ->scalarNode('user_primay_key')->isRequired()->cannotBeEmpty()->end()
         ->end();
 
         return $treeBuilder;

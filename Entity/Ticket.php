@@ -26,8 +26,7 @@ class Ticket {
     private $id;
 
     /**
-     * @var UserInterface
-     * @ORM\ManyToOne(targetEntity="\Kdrmklabs\Bundle\TicketBundle\Model\UserInterface")
+     * ORM defined in Kdrmklabs\Bundle\TicketBundle\EventListener\LoadMetadata
      */
     private $user;
     
