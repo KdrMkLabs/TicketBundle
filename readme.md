@@ -6,7 +6,22 @@ Needs a minimum configuration and the whole procedure is very simple.
 
 ## Installation.
 
-### I. Add this bundle to your project in composer.json
+### I. Installing the bundle in two different ways.
+
+#### a) Automatically.
+
+
+You can install the last version of this bundle with composer running the command from your command line:
+
+```
+$ composer require kdrmklabs/ticket-bundle
+```
+
+#### b) By composer.json .
+
+Or you can install this bundle by adding next code line to your project in the composer.json file and after update it with the command `composer update`
+
+file: /composer.json
 
 ```json
 {
@@ -16,13 +31,13 @@ Needs a minimum configuration and the whole procedure is very simple.
 }
 ``` 
 
-### II. Download the bundle library and dependencies with composer by running the command
+Now, update the bundle with composer:
 
 ```
 $ composer update kdrmklabs/ticket-bundle
 ```
 
-### III. Enable and register the Bundle in the AppKernel
+### II. Enable and register the Bundle in the AppKernel
 
 ```php
 // file: app/AppKernel.php
@@ -38,7 +53,7 @@ public function registerBundles()
 }
 ```
 
-### IV. Install Gedmon Doctrine2 extensions
+### III. Install Gedmon Doctrine2 extensions
 
 #### Requirements:
 
@@ -71,12 +86,12 @@ $ php composer.phar update gedmo/doctrine-extensions
 
 #### Configure Gedmo:
 
-IV.I. Create a DoctrineExtensionListener
+III.I. Create a DoctrineExtensionListener
 
 ```php
-// file: src/YourBundle/Listener/DoctrineExtensionListener.php
+// file: src/AppBundle/Listener/DoctrineExtensionListener.php
 
-namespace YourBundle\Listener;
+namespace AppBundle\Listener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -111,7 +126,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
 }
 ```
 
-IV.II. Create file `doctrine_extensions.yml` and locate it in your `app/config` directory
+III.II. Create file `doctrine_extensions.yml` and locate it in your `app/config` directory
 
 ```yml
 # file: app/config/doctrine_extensions.yml
@@ -134,7 +149,7 @@ services:
     # KernelRequest listener
     extension.listener:
         # change this to your DoctrineExtensionListener namespace
-        class: YourBundle\Listener\DoctrineExtensionListener
+        class: AppBundle\Listener\DoctrineExtensionListener
         calls:
             - [ setContainer, [ @service_container ] ]
         tags:
@@ -190,9 +205,9 @@ services:
             - [ setAnnotationReader, [ @annotation_reader ] ]
 ```
 
-> Don't forget change 'YourBundle\Listener\DoctrineExtensionListener' to your DoctrineExtensionListener namespace.
+> Don't forget change 'AppBundle\Listener\DoctrineExtensionListener' to your DoctrineExtensionListener namespace.
 
-Finally, Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml:**
+Finally, Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml** :
 
 ```yml
 # file: app/config/config.yml
@@ -206,25 +221,25 @@ imports:
 More details of Gedmo Doctrine2 extensions in Symfony2: https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/symfony2.md
 
 
-### V. (optional) If you want paginate results with KNPPaginatorBundle you can install and configure it.
+### IV. (optional) If you want paginate results with KNPPaginatorBundle you can install and configure it.
 
 More details: https://github.com/KnpLabs/KnpPaginatorBundle#configuration-example
 
-### VI. Configure the bundle.
+### V. Configure the bundle.
 
-VI.I. Add `kdrmklabs_ticket` configuration to you config.yml
+V.I. Add `kdrmklabs_ticket` configuration to you config.yml
 
 ```yml
 # file: app/config/config.yml
 
 kdrmklabs_ticket:
-    user_class: YourBundle\Entity\User
-    user_primay_key: id_user
+    user_class: AppBundle\Entity\User
+    user_primay_key: id
 ```
 
 Where `user_primay_key` is the name of your primary key in the user table.
 
-VI.II. Add `resolve_target_entities` to your doctrine configuration
+V.II. Add `resolve_target_entities` to your doctrine configuration
 
 ```yml
 # file: app/config/config.yml
@@ -241,7 +256,7 @@ doctrine:
 
 More details about resolve_target_entities: http://symfony.com/doc/current/cookbook/doctrine/resolve_target_entity.html
 
-VI.III. Implements `Kdrmklabs\Bundle\TicketBundle\Model\UserInterface` from your User entity.
+V.III. Implements `Kdrmklabs\Bundle\TicketBundle\Model\UserInterface` from your User entity.
 
 ```php
 // file: 
@@ -328,7 +343,7 @@ Description
 createTicket(
     string $initial_message, 
     string $subject, 
-    int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|YourBundle\Entity\User $user, 
+    int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|AppBundle\Entity\User $user, 
     int|Kdrmklabs\Bundle\TicketBundle\Entity\TicketCategory $category,
     int|Kdrmklabs\Bundle\TicketBundle\Entity\TicketStatus $status 
     [, int $dateAdded])
@@ -378,7 +393,7 @@ Description:
 ```php
 replyTicket(
     int|Kdrmklabs\Bundle\TicketBundle\Entity\Ticket $ticket, 
-    int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|YourBundle\Entity\User $user, 
+    int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|AppBundle\Entity\User $user, 
     string $message
     [, int $dateAdded])
 ```
@@ -434,7 +449,7 @@ Description:
 
 ```php
 getTickets(
-        [ int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|YourBundle\Entity\User $author,
+        [ int|Kdrmklabs\Bundle\TicketBundle\Model\UserInterface|AppBundle\Entity\User $author,
         int|Kdrmklabs\Bundle\TicketBundle\Entity\TicketCategory $category,
         int|Kdrmklabs\Bundle\TicketBundle\Entity\TicketStatus $status 
         int $from_datetime,
