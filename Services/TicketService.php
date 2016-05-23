@@ -7,6 +7,8 @@ use Kdrmklabs\Bundle\TicketBundle\Entity\Ticket;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketMessage;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketStatus;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketCategory;
+use Kdrmklabs\Bundle\TicketBundle\Entity\TicketContactType;
+use TrendyTourist\Common\GeographicBundle\Entity\GeoLanguages;
 
 class TicketService extends AbstractService {
     
@@ -54,7 +56,7 @@ class TicketService extends AbstractService {
         return $query;
     }
     
-    public function updateTicket($ticket = null, $category = null, $status = null, $subject = null, $user = null, $initial_message = null, $dateAdded = null, $closed = null, $ticketNumber = null, $dateUpd = null) {
+    public function updateTicket($ticket = null, $category = null, $status = null, $subject = null, $user = null, $initial_message = null, $client_name = null, $client_email = null, $client_type = null, $locale = null, $dateAdded = null, $closed = null, $ticketNumber = null, $dateUpd = null) {
         
         $em = $this->getDoctrineManager();
         
@@ -94,6 +96,19 @@ class TicketService extends AbstractService {
         if($dateAdded){
             $ticket->setDateAdded($dateAdded);
         }
+        if($client_name){
+            $ticket->setCompleteName($client_name);
+        }
+        if($client_email){
+            $ticket->setEmail($client_email);
+        }
+        if($client_type){
+            $client_type_reference = ($client_type instanceof TicketContactType) ? $client_type : $em->getReference('KdrmklabsTicketBundle:TicketContactType',$client_type);
+            $ticket->setContactType($client_type_reference);
+        }
+        if($locale){
+            $ticket->setLocale($locale);
+        }
         if($initial_message AND $user AND $persist){
             $message = new TicketMessage();
             $message->setTicket($ticket);
@@ -102,6 +117,8 @@ class TicketService extends AbstractService {
             
             $em->persist($message);
         }
+        
+        
         
         if($persist){
             $em->persist($ticket);
@@ -112,8 +129,8 @@ class TicketService extends AbstractService {
         return $ticket;
     }
     
-    public function createTicket($initial_message, $subject, $user, $category, $status, $dateAdded = null){
-        return $this->updateTicket(null, $category, $status, $subject, $user, $initial_message, $dateAdded);
+    public function createTicket($initial_message, $subject, $user, $category, $status, $client_name, $client_email, $client_type, $locale, $dateAdded = null){
+        return $this->updateTicket(null, $category, $status, $subject, $user, $initial_message, $client_name, $client_email, $client_type, $locale, $dateAdded);
     }
     
     public function replyTicket($ticket, $user = null, $message = null, $dateAdded = null) {
@@ -182,4 +199,16 @@ class TicketService extends AbstractService {
         
         return $em->getRepository('KdrmklabsTicketBundle:Ticket')->find($id);
     }
+    
+    public function getContactTypes($active = true){
+        $em = $this->getDoctrineManager();
+        return $em->getRepository('KdrmklabsTicketBundle:TicketContactType')->findBy(array('active' => $active));
+    }
+    
+    public function getCategories($active = true){
+        $em = $this->getDoctrineManager();
+        return $em->getRepository('KdrmklabsTicketBundle:TicketCategory')->findBy(array('active' => $active));
+    }
+    
+    
 }
