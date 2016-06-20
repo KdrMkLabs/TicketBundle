@@ -8,7 +8,6 @@ use Kdrmklabs\Bundle\TicketBundle\Entity\TicketMessage;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketStatus;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketCategory;
 use Kdrmklabs\Bundle\TicketBundle\Entity\TicketContactType;
-use TrendyTourist\Common\GeographicBundle\Entity\GeoLanguages;
 
 class TicketService extends AbstractService {
     
