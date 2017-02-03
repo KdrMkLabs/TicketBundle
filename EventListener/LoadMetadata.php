@@ -37,7 +37,8 @@ class LoadMetadata {
                 'joinColumns' => array(
                     array(
                         'name' => 'user_id',
-                        'referencedColumnName' => $this->primary_key
+                        'referencedColumnName' => $this->primary_key,
+                        'onDelete' => "CASCADE"
                     )
                 )
             );
